@@ -10,9 +10,11 @@
   "license": "ISC",
   "devDependencies": {
     "autoprefixer-stylus": "^0.8.0",
+    "browser-sync": "^2.9.11",
     "gulp": "^3.8.8",
     "gulp-concat": "^2.4.1",
     "gulp-concat-css": "^1.1.0",
+    "gulp-gh-pages": "^0.5.4",
     "gulp-imagemin": "^1.2.1",
     "gulp-minify-css": "^0.3.10",
     "gulp-minify-html": "^0.1.6",
@@ -22,7 +24,6 @@
     "gulp-util": "^3.0.7",
     "jeet": "^6.1.2",
     "kouto-swiss": "^0.11.13",
-    "rsyncwrapper": "^0.4.3",
     "rupture": "^0.6.1"
   }
 }

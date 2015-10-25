@@ -1,5 +1,4 @@
 var gulp 		= require('gulp'),
-	gutil       = require('gulp-util'),
 	plumber		= require('gulp-plumber'),
 	koutoSwiss	= require('kouto-swiss'),
 	prefixer	= require('autoprefixer-stylus'),
@@ -12,8 +11,8 @@ var gulp 		= require('gulp'),
 	concat 		= require('gulp-concat'),
 	minifyCss 	= require('gulp-minify-css'),
 	imagemin   	= require('gulp-imagemin'),
-	concatCss 	= require('gulp-concat-css'),
-	rsync       = require('rsyncwrapper').rsync;
+	concatCss 	= require('gulp-concat-css')
+	deploy		= require('gulp-gh-pages');
 
 gulp.task('browser-sync', function () {
    var files = [
@@ -82,21 +81,10 @@ gulp.task('watch', function () {
   //gulp.watch('app/src/fonts/**/*', ['fonts']);
 });
 
-gulp.task('deploy', function(){
-    rsync({
-        ssh: true,
-        src: 'build/',
-        dest: 'user@hostname:/path/to/www',
-        recursive: true,
-        syncDest: true,
-        args: ['--verbose']
-    },
-        function (erro, stdout, stderr, cmd) {
-            gutil.log(stdout);
-    });
+// just run gulp deploy-pages to send build files to gh-pages
+gulp.task('deploy-pages', function () {
+  return gulp.src("build/**/*")
+    .pipe(deploy());
 });
 
-
 gulp.task('default', ['stylus', 'fonts','watch', 'imagemin', 'scripts', 'css', 'html', 'browser-sync']);
-
-gulp.task('r-deploy', ['stylus', 'fonts', 'imagemin', 'scripts', 'css', 'html', 'deploy']);
