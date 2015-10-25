@@ -1,18 +1,23 @@
-var gulp = require('gulp'),
-	minHtml = require('gulp-minify-html'),
-	connect = require('gulp-connect'),
-    stylus = require('gulp-stylus'),
-	uglify = require('gulp-uglify'),
-	concat = require('gulp-concat'),
-	minifyCss = require('gulp-minify-css'),
-	imagemin   = require('gulp-imagemin'),
-	concatCss = require('gulp-concat-css');
+var gulp 		= require('gulp'),
+	plumber		= require('gulp-plumber'),
+	koutoSwiss	= require('kouto-swiss'),
+	prefixer	= require('autoprefixer-stylus'),
+	jeet		= require('jeet'),
+	rupture		= require('rupture'),
+	minHtml 	= require('gulp-minify-html'),
+	connect 	= require('gulp-connect'),
+    stylus 		= require('gulp-stylus'),
+	uglify 		= require('gulp-uglify'),
+	concat 		= require('gulp-concat'),
+	minifyCss 	= require('gulp-minify-css'),
+	imagemin   	= require('gulp-imagemin'),
+	concatCss 	= require('gulp-concat-css');
 
 gulp.task('connect', function() {
   connect.server({
     root: 'build/',
     livereload: true,
-      port: 8000
+      port: 8001
   });
 });
 
@@ -42,12 +47,26 @@ gulp.task('scripts', function(){
 	.pipe(connect.reload());
 });
 
-gulp.task('stylus', function () {
+/*gulp.task('stylus', function () {
   gulp.src('app/src/styl/main.styl')
     .pipe(stylus())
     .pipe(gulp.dest('build/css'))
-    .pipe(connect.reload());;
+    .pipe(connect.reload());
+});*/
+
+gulp.task('stylus', function(){
+		gulp.src('app/src/styl/main.styl')
+		.pipe(plumber())
+		.pipe(stylus({
+			use:[koutoSwiss(), prefixer(), jeet(),rupture()],
+			compress: true
+		}))
+		//.pipe(gulp.dest('_site/assets/css/'))
+		//.pipe(browserSync.reload({stream:true}))
+		.pipe(gulp.dest('build/css'))
+		.pipe(connect.reload());
 });
+
  
 
 gulp.task('css', function(){
