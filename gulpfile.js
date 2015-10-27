@@ -82,9 +82,11 @@ gulp.task('watch', function () {
 });
 
 // just run gulp deploy-pages to send build files to gh-pages
-gulp.task('deploy-pages', function () {
-  return gulp.src("build/**/*")
-    .pipe(deploy());
-});
+//gulp.task('deploy-pages', function () {
+  //return gulp.src("build/**/*")
+    //.pipe(deploy());
+//});
+
+// Olhar na documentação como usar o módulo deploy-pages
 
 gulp.task('default', ['stylus', 'fonts','watch', 'imagemin', 'scripts', 'css', 'html', 'browser-sync']);
