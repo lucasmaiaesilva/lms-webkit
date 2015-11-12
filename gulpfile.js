@@ -1,4 +1,5 @@
 var gulp 		= require('gulp'),
+	react	= require('gulp-react'),
 	plumber		= require('gulp-plumber'),
 	koutoSwiss	= require('kouto-swiss'),
 	prefixer	= require('autoprefixer-stylus'),
@@ -19,7 +20,8 @@ gulp.task('browser-sync', function () {
       'app/**/*.html',
       'app/src/css/**/*.css',
       'app/src/img/**/*',
-      'app/src/js/**/*.js'
+      'app/src/js/**/*.js',
+      'app/src/jsx/**/*.jsx'
    ];
 
    browserSync.init(files, {
@@ -47,15 +49,21 @@ gulp.task('scripts', function(){
 	.pipe(gulp.dest('build/js'))
 });
 
+gulp.task('jsx', function(){
+    return gulp.src('app/src/jsx/**/*.jsx')
+        .pipe(react())
+        .pipe(gulp.dest('build/js'));
+});
+
 gulp.task('stylus', function(){
-		gulp.src('app/src/styl/main.styl')
-		.pipe(plumber())
-		.pipe(stylus({
-			use:[koutoSwiss(), prefixer(), jeet(),rupture()],
-			compress: true
-		}))
-		.pipe(browserSync.reload({stream:true}))
-		.pipe(gulp.dest('build/css'))
+	gulp.src('app/src/styl/main.styl')
+	.pipe(plumber())
+	.pipe(stylus({
+		use:[koutoSwiss(), prefixer(), jeet(),rupture()],
+		compress: true
+	}))
+	.pipe(browserSync.reload({stream:true}))
+	.pipe(gulp.dest('build/css'))
 });
 
  
@@ -76,6 +84,7 @@ gulp.task('html', function () {
 gulp.task('watch', function () {
   gulp.watch(['app/**/*.html'], ['html']);
   gulp.watch('app/src/js/*.js', ['scripts']);
+  gulp.watch('app/src/jsx/*.jsx', ['jsx']);
   gulp.watch('app/src/css/*.css', ['css']);
   gulp.watch('app/src/styl/*.styl', ['stylus']);
   //gulp.watch('app/src/fonts/**/*', ['fonts']);
@@ -89,4 +98,4 @@ gulp.task('watch', function () {
 
 // Olhar na documentação como usar o módulo deploy-pages
 
-gulp.task('default', ['stylus', 'fonts','watch', 'imagemin', 'scripts', 'css', 'html', 'browser-sync']);
+gulp.task('default', ['html', 'stylus', 'fonts','watch', 'imagemin', 'jsx', 'scripts', 'css', 'browser-sync']);
