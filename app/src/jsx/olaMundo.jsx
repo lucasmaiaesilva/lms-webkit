@@ -1,6 +1,8 @@
 var HelloMessage = React.createClass ({
 	render: function(){
-		return <h1>Olá mundo escrito em React!!</h1>;
+		return (
+			<h1>Olá mundo escrito em React!!</h1>
+		);
 	}
 });
 
