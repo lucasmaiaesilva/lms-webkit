@@ -1,5 +1,4 @@
 var gulp 		= require('gulp'),
-	react	= require('gulp-react'),
 	plumber		= require('gulp-plumber'),
 	koutoSwiss	= require('kouto-swiss'),
 	prefixer	= require('autoprefixer-stylus'),
@@ -12,8 +11,15 @@ var gulp 		= require('gulp'),
 	concat 		= require('gulp-concat'),
 	minifyCss 	= require('gulp-minify-css'),
 	imagemin   	= require('gulp-imagemin'),
-	concatCss 	= require('gulp-concat-css')
-	deploy		= require('gulp-gh-pages');
+	concatCss 	= require('gulp-concat-css'),
+	deploy		= require('gulp-gh-pages'),
+	gutil		= require('gulp-util'), // mostrar mensagens de log no console sobre o processo de build
+	source		= require('vinyl-source-stream'), // gerenciar o source stream
+	browserify	= require('browserify'), // responsável por definir qual parte do código pertence a qual parte via require
+	watchify	= require('watchify'), // recompila o código assim que alguma mudança é detectada
+	reactify	= require('reactify'), // transform jsx files in js
+	notifier	= require('node-notifier');
+
 
 gulp.task('browser-sync', function () {
    var files = [
@@ -37,22 +43,72 @@ gulp.task('imagemin', function() {
 		.pipe(gulp.dest('build/img'));
 });
 
+gulp.task('react', function () {
+	var bundler = watchify(browserify({
+		entries: ['./app/src/jsx/app.jsx'], 
+		transform: [reactify],
+		extensions: ['.jsx'],
+		debug: true,
+		cache: {},
+		packageCache: {},
+		fullPaths: true
+	}, watchify.args))
+		.on('update', function () { gutil.log('Rebundling...'); })
+		.on('time', function (time) {
+			gutil.log('Rebundled in:', gutil.colors.cyan(time + 'ms'));
+		});
+
+	bundler.transform(reactify);
+	bundler.on('update', rebundle);
+
+	function rebundle() {
+		return bundler.bundle()
+			.on('error', function (err) {
+				gutil.log(err);
+				notifier.notify({ title: 'Browserify Error', message: 'Something went wrong :/' });
+			})
+			.pipe(source('components.js'))
+			.pipe(gulp.dest('./build/js'))
+			.pipe(browserSync.reload({ stream: true }));
+	}
+
+	return rebundle();
+});
+
+gulp.task('scripts', function () {
+	var bundler = watchify(browserify({
+		entries: ['./app/src/js/main.js'], 
+		extensions: ['.js'],
+		debug: true,
+		cache: {},
+		packageCache: {},
+		fullPaths: true
+	}, watchify.args))
+		.on('update', function () { gutil.log('Rebundling...'); })
+		.on('time', function (time) {
+			gutil.log('Rebundled in:', gutil.colors.cyan(time + 'ms'));
+		});
+
+	bundler.transform(reactify);
+	bundler.on('update', rebundle);
+
+	function rebundle() {
+		return bundler.bundle()
+			.on('error', function (err) {
+				gutil.log(err);
+				notifier.notify({ title: 'Browserify Error', message: 'Something went wrong :/' });
+			})
+			.pipe(source('main.js'))
+			.pipe(gulp.dest('./build/js'))
+			.pipe(browserSync.reload({ stream: true }));
+	}
+
+	return rebundle();
+});
+
 gulp.task('fonts', function(){
     gulp.src('app/src/fonts/**/*')
     .pipe(gulp.dest('build/fonts'))
-});
-
-gulp.task('scripts', function(){
-	gulp.src('app/src/js/*.js') 
-	.pipe(concat('all.min.js'))
-	.pipe(uglify())
-	.pipe(gulp.dest('build/js'))
-});
-
-gulp.task('jsx', function(){
-    return gulp.src('app/src/jsx/**/*.jsx')
-        .pipe(react())
-        .pipe(gulp.dest('build/js'));
 });
 
 gulp.task('stylus', function(){
@@ -98,4 +154,4 @@ gulp.task('watch', function () {
 
 // Olhar na documentação como usar o módulo deploy-pages
 
-gulp.task('default', ['html', 'stylus', 'fonts','watch', 'imagemin', 'jsx', 'scripts', 'css', 'browser-sync']);
+gulp.task('default', ['html', 'stylus', 'fonts', 'watch', 'imagemin', 'react', 'scripts', 'css', 'browser-sync']);

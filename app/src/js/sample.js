@@ -1,1 +1,2 @@
-// put your all js files in this folder
+// simple js file
+console.log('teste');
