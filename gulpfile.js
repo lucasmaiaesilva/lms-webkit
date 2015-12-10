@@ -133,7 +133,6 @@ gulp.task('css', function(){
 
 gulp.task('html', function () {
   gulp.src('app/**/*.html')
-  	///.pipe(minHtml())
 	.pipe(gulp.dest('build/'))
 });
 
