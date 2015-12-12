@@ -1,7 +1,7 @@
 {
-  "name": "teste-neo",
+  "name": "LMS Webkit",
   "version": "1.0.0",
-  "description": "Teste para entrevista de emprego, plataforma neo",
+  "description": "A boilerplate created by Lucas Maia e Silva",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
