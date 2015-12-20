@@ -22,19 +22,17 @@ var gulp 		= require('gulp'),
 
 
 gulp.task('browser-sync', function () {
-   var files = [
-      'app/**/*.html',
-      'app/src/css/**/*.css',
-      'app/src/img/**/*',
-      'app/src/js/**/*.js',
-      'app/src/jsx/**/*.jsx'
-   ];
+	var files = [
+		'app/**/*.html',
+		'app/src/css/**/*.css',
+		'app/src/img/**/*'
+	];
 
-   browserSync.init(files, {
-      server: {
-         baseDir: 'build/'
-      }
-   });
+	browserSync.init(files, {
+		server: {
+			baseDir: 'build/'
+		}
+	});
 });
 
 gulp.task('imagemin', function() {
@@ -132,17 +130,15 @@ gulp.task('css', function(){
 });
 
 gulp.task('html', function () {
-  gulp.src('app/**/*.html')
-	.pipe(gulp.dest('build/'))
+	gulp.src('app/**/*.html')
+		.pipe(gulp.dest('build/'))
 });
 
 gulp.task('watch', function () {
-  gulp.watch(['app/**/*.html'], ['html']);
-  gulp.watch('app/src/js/*.js', ['scripts']);
-  gulp.watch('app/src/jsx/*.jsx', ['jsx']);
-  gulp.watch('app/src/css/*.css', ['css']);
-  gulp.watch('app/src/styl/*.styl', ['stylus']);
-  //gulp.watch('app/src/fonts/**/*', ['fonts']);
+	gulp.watch(['app/**/*.html'], ['html']);
+	gulp.watch('app/src/css/*.css', ['css']);
+	gulp.watch('app/src/styl/*.styl', ['stylus']);
+	//gulp.watch('app/src/fonts/**/*', ['fonts']);
 });
 
 // just run gulp deploy-pages to send build files to gh-pages
